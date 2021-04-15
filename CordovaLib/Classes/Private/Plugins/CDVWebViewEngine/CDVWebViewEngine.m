@@ -203,6 +203,13 @@
 
     // re-create WKWebView, since we need to update configuration
     WKWebView* wkWebView = [[WKWebView alloc] initWithFrame:self.engineWebView.frame configuration:configuration];
+    // add begin
+    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000
+    if (@available(iOS 11.0, *)) {
+        [wkWebView.scrollView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+    }
+    #endif
+    // add end
     wkWebView.UIDelegate = self.uiDelegate;
 
     /*
@@ -527,6 +534,31 @@ static void * KVOContext = &KVOContext;
     }
 
     return NO;
+}
+
+-(void)loadFileURL:(CDVInvokedUrlCommand*)command;
+{
+    NSString* fileurlStr = [command argumentAtIndex:0];
+    NSString* folderurlStr = [command argumentAtIndex:1];
+    NSURL *nsURLfile = [NSURL fileURLWithPath:fileurlStr];
+    NSURL *nsURLfileroot = [NSURL fileURLWithPath:folderurlStr];
+
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSArray* contentOfDirectory = [fileManager contentsOfDirectoryAtPath:folderurlStr error:nil];
+    int contentCount = [contentOfDirectory count];
+
+    int i;
+    for(i=0;i<contentCount;i++){
+        NSString* fileName = [contentOfDirectory objectAtIndex:i];
+        NSString* path = [folderurlStr stringByAppendingFormat:@"%@%@",@"/",fileName];
+        NSLog(path);
+    }
+
+    if ([fileManager fileExistsAtPath:[nsURLfile path]]){
+        [(WKWebView*)_engineWebView loadFileURL:nsURLfile allowingReadAccessToURL:nsURLfileroot];
+    } else {
+        NSLog(@"file does not exist");
+    }
 }
 
 - (void) webView: (WKWebView *) webView decidePolicyForNavigationAction: (WKNavigationAction*) navigationAction decisionHandler: (void (^)(WKNavigationActionPolicy)) decisionHandler
