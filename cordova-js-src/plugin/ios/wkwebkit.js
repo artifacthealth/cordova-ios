@@ -36,9 +36,6 @@ var WkWebKit = {
             return window.CDV_ASSETS_URL + path.replace('file://', '/_app_file_');
         }
         return path;
-    },
-    loadFileUrl: function (filePath, folderPath) {
-        exec(null, null, "CDVWebViewEngine", "loadFileURL", [filePath, folderPath]);
     }
 };
 

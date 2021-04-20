@@ -25,6 +25,5 @@
 @property (nonatomic, strong, readonly) id <WKUIDelegate> uiDelegate;
 
 - (void)allowsBackForwardNavigationGestures:(CDVInvokedUrlCommand*)command;
-- (void)loadFileURL:(CDVInvokedUrlCommand*)command;
 
 @end

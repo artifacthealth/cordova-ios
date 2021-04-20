@@ -536,31 +536,6 @@ static void * KVOContext = &KVOContext;
     return NO;
 }
 
--(void)loadFileURL:(CDVInvokedUrlCommand*)command;
-{
-    NSString* fileurlStr = [command argumentAtIndex:0];
-    NSString* folderurlStr = [command argumentAtIndex:1];
-    NSURL *nsURLfile = [NSURL fileURLWithPath:fileurlStr];
-    NSURL *nsURLfileroot = [NSURL fileURLWithPath:folderurlStr];
-
-    NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSArray* contentOfDirectory = [fileManager contentsOfDirectoryAtPath:folderurlStr error:nil];
-    int contentCount = [contentOfDirectory count];
-
-    int i;
-    for(i=0;i<contentCount;i++){
-        NSString* fileName = [contentOfDirectory objectAtIndex:i];
-        NSString* path = [folderurlStr stringByAppendingFormat:@"%@%@",@"/",fileName];
-        NSLog(path);
-    }
-
-    if ([fileManager fileExistsAtPath:[nsURLfile path]]){
-        [(WKWebView*)_engineWebView loadFileURL:nsURLfile allowingReadAccessToURL:nsURLfileroot];
-    } else {
-        NSLog(@"file does not exist");
-    }
-}
-
 - (void) webView: (WKWebView *) webView decidePolicyForNavigationAction: (WKNavigationAction*) navigationAction decisionHandler: (void (^)(WKNavigationActionPolicy)) decisionHandler
 {
     NSURL* url = [navigationAction.request URL];
